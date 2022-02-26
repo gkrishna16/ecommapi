@@ -136,11 +136,10 @@ const Product = () => {
 	const dispatch = useDispatch();
 
 	useState(() => {
-		const getProduct = () => {
+		const getProduct = async () => {
 			try {
-				publicRequest
-					.get('/products/find/' + id)
-					.then((response) => setProduct(response.data));
+				const res = await publicRequest.get('/products/find/' + id);
+				setProduct(res.data);
 			} catch (error) {
 				console.log(error);
 			}
@@ -150,7 +149,7 @@ const Product = () => {
 
 	const handleQuantity = (type) => {
 		if (type === 'dec') {
-			quantity > 1 && setQuantity(quantity - 1);
+			return quantity > 1 && setQuantity(quantity - 1);
 		} else {
 			return setQuantity(quantity + 1);
 		}
@@ -183,12 +182,12 @@ const Product = () => {
 						<Filter>
 							<FilterTitle>Color</FilterTitle>
 							{product.color?.map((c) => (
-								<FilterColor color={c} key={c} />
+								<FilterColor onClick={() => setColor(c)} color={c} key={c} />
 							))}
 						</Filter>
 						<Filter>
 							<FilterTitle>Size</FilterTitle>
-							<FilterSize>
+							<FilterSize onChange={(e) => setSize(e.target.value)}>
 								{product.size?.map((s) => (
 									<FilterSizeOption key={s}>{s}</FilterSizeOption>
 								))}
